@@ -3,9 +3,11 @@ import { getAllJobs } from '../services/jobs'
 import { useNavigate } from 'react-router-dom';
 const Jobs = () => {
   const [jobs,setJobs]=useState([]);
+  const [skills,setSkills]=useState("");
   const navigate=useNavigate();
   useEffect(()=>{
-    getAllJobs().then((response)=>{
+    getAllJobs({skills:''})
+    .then((response)=>{
       setJobs(response.data);
     }).catch((error)=>{
       console.log(error);
@@ -15,10 +17,18 @@ const Jobs = () => {
   const gotoJobDetails=(id)=>{
     navigate(`/job/${id}`);
   }
+  const triggerSearch=()=>{
+    getAllJobs({skills})
+    .then((response)=>{setJobs(response.data)})
+    .catch((error)=>{
+      console.log(error);
+      setJobs([]);
+    })
+  }
   return (
     <div>
       <h1>Jobs</h1>
-      {localStorage.getItem('token') && <button style={{
+      {localStorage.getItem('token') && <><button style={{
               padding:'5px 10px',
               backgroundColor:'#ED5353',
               color:'white',
@@ -27,7 +37,19 @@ const Jobs = () => {
               borderRadius:'5px',
               marginTop:'5px'
             }}
-       onClick={()=>navigate('/createjob')}>Create Job</button>}
+       onClick={()=>navigate('/createjob')}>Create Job</button>
+       <input style={{width:'300px'}} type="text" value={skills} onChange={(e)=>setSkills(e.target.value)} placeholder='Search by skills(separated by comma)' />
+       <button style={{
+              padding:'5px 10px',
+              backgroundColor:'#ED5353',
+              color:'white',
+              border:'none',
+              cursor:'pointer',
+              borderRadius:'5px',
+              marginTop:'5px'
+            }} onClick={triggerSearch}>Search</button>
+       </>
+       }
       <ul>
         {jobs.map((job)=>(
           <li key={job._id}>
