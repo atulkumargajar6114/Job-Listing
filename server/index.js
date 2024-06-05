@@ -20,7 +20,7 @@ const jobRoutes=require('./routes/job');
 const { default: mongoose } = require('mongoose');
 
 app.use(cors({
-  origin:'http://localhost:5173',
+  origin:'*',
 }))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}))
